@@ -1,0 +1,31 @@
+local loottable = require(game.ServerStorage:WaitForChild("LoottableLegB"))
+local Loot = game.ServerStorage.LootBuy
+
+
+function GetRandomItem()
+	local Sum= 0
+	for LootName,Chance in pairs(loottable) do
+		Sum += Chance
+	end
+	local RandomNumber = math.random(Sum)
+	for LootName, Chance in pairs(loottable) do
+		if RandomNumber <= Chance then
+			return LootName
+		else
+			RandomNumber -= Chance
+		end
+	end
+end
+
+local cost = 800
+
+local Sound = script.Parent.Parent.Sound
+
+
+	script.Parent.Triggered:Connect(function(Player)
+	if Player.leaderstats.Money.Value >= cost then
+			Player.leaderstats.Money.Value = Player.leaderstats.Money.Value - cost
+		local Item = Loot:FindFirstChild(GetRandomItem()):Clone()
+		Sound:Play()
+		Item.Parent = Player.Backpack
+	end
